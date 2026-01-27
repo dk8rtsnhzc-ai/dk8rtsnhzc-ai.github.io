@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CTRL + Z</title>
+
+<meta name="theme-color" content="#00ff41">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600&display=swap');
+
+:root{
+  --green:#00ff41;
+  --red:#ff0033;
+}
+
+*{
+  box-sizing:border-box;
+  font-family:'Source Code Pro', monospace;
+}
+
+body{
+  margin:0;
+  background:black;
+  color:var(--green);
+  overflow:hidden;
+}
+
+/* ===== CRT DISTORTION ===== */
+body::before{
+  content:"";
+  position:fixed;
+  inset:-10%;
+  background:
+    repeating-linear-gradient(
+      rgba(0,255,65,.05) 0px,
+      rgba(0,255,65,.05) 1px,
+      transparent 2px,
+      transparent 4px
+    );
+  pointer-events:none;
+  mix-blend-mode:overlay;
+  animation:scan 6s linear infinite;
+}
+
+@keyframes scan{
+  0%{transform:translateY(0)}
+  100%{transform:translateY(100px)}
+}
+
+/* ===== RGB SPLIT GLITCH ===== */
+.glitch{
+  animation:glitch 1.2s infinite;
+}
+
+@keyframes glitch{
+  0%{text-shadow:2px 0 red,-2px 0 cyan}
+  20%{text-shadow:-2px 0 red,2px 0 cyan}
+  40%{text-shadow:2px 2px red,-2px -2px cyan}
+  60%{text-shadow:-2px -2px red,2px 2px cyan}
+  100%{text-shadow:none}
+}
+
+/* ===== LOGIN ===== */
+#login{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:black;
+  z-index:10;
+}
+
+.login-box{
+  border:1px solid var(--green);
+  padding:20px;
+  width:90%;
+  max-width:320px;
+  text-align:center;
+}
+
+/* ===== HEADER ===== */
+header{
+  text-align:center;
+  padding:10px;
+  border-bottom:1px solid var(--green);
+  letter-spacing:2px;
+}
+
+/* ===== MAIN ===== */
+main{
+  height:calc(100vh - 90px);
+  overflow-y:auto;
+  padding:8px;
+}
+
+/* ===== POST BOX ===== */
+.post-box textarea{
+  width:100%;
+  height:60px;
+  background:black;
+  border:1px solid var(--green);
+  color:var(--green);
+  padding:6px;
+}
+
+.post-box button{
+  width:100%;
+  margin-top:6px;
+  background:black;
+  border:1px solid var(--green);
+  color:var(--green);
+  padding:8px;
+}
+
+/* ===== POSTS ===== */
+.post{
+  border-left:2px solid var(--green);
+  padding:6px 8px;
+  margin-top:8px;
+}
+
+.post.boosted{
+  border-left-color:var(--red);
+  animation:glitch .8s infinite;
+}
+
+/* ===== TERMINAL ===== */
+#terminal{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:black;
+  border-top:1px solid var(--green);
+  padding:6px;
+  font-size:12px;
+}
+
+/* ===== PANELS ===== */
+.panel{
+  position:fixed;
+  top:0;
+  width:80%;
+  height:100%;
+  background:black;
+  border-left:1px solid var(--green);
+  border-right:1px solid var(--green);
+  z-index:9;
+  padding:10px;
+  display:none;
+  overflow-y:auto;
+}
+
+#trendingPanel{left:0}
+#adminPanel{right:0}
+
+/* ===== PANIC ===== */
+.panic{
+  animation:pulse .15s infinite;
+}
+
+@keyframes pulse{
+  0%{background:#000}
+  50%{background:#300}
+  100%{background:#000}
+}
+</style>
+</head>
+
+<body>
+
+<div id="login">
+  <div class="login-box glitch">
+    <h3>CTRL + Z</h3>
+    <p>ENTER SCHOOL EMAIL</p>
+    <input id="email" style="width:100%;padding:8px;background:black;border:1px solid var(--green);color:var(--green)">
+    <button onclick="enter()">ENTER</button>
+  </div>
+</div>
+
+<header id="header">CTRL + Z</header>
+
+<main>
+  <div class="post-box">
+    <textarea id="text" placeholder=">_ transmit packet"></textarea>
+    <button onclick="post()">EXECUTE</button>
+  </div>
+  <div id="posts"></div>
+</main>
+
+<div id="terminal">> SYSTEM_LOG: INITIALIZING NODE...</div>
+
+<!-- TRENDING -->
+<div class="panel" id="trendingPanel">
+  <h4>SYSTEM FEED</h4>
+  <p>⚠️ SIGNAL SPIKE</p>
+  <p>⚠️ MODERATION FAILURE</p>
+</div>
+
+<!-- ADMIN -->
+<div class="panel" id="adminPanel">
+  <h4>CONTROL NODE</h4>
+  <button onclick="panic()">BREACH / PANIC</button>
+</div>
+
+<script>
+const login=document.getElementById("login");
+const terminal=document.getElementById("terminal");
+const posts=document.getElementById("posts");
+const header=document.getElementById("header");
+
+setTimeout(()=>{
+  terminal.textContent="> SYSTEM_LOG: STANDBY";
+},1200);
+
+function enter(){
+  login.style.display="none";
+  terminal.textContent="> SYSTEM_LOG: SESSION AUTHENTICATED";
+}
+
+function post(){
+  if(!text.value.trim()) return;
+  const p=document.createElement("div");
+  p.className="post";
+  p.innerHTML=`
+    <strong>Anonymous #${Math.floor(Math.random()*999)}</strong>
+    <p>${text.value}</p>
+  `;
+  posts.prepend(p);
+  terminal.textContent="> SYSTEM_LOG: DATA COMMITTED";
+  text.value="";
+}
+
+/* ===== MOBILE SWIPE ===== */
+let startX=0;
+document.addEventListener("touchstart",e=>startX=e.touches[0].clientX);
+document.addEventListener("touchend",e=>{
+  let dx=e.changedTouches[0].clientX-startX;
+  if(dx>80) adminPanel.style.display="block";
+  if(dx<-80) trendingPanel.style.display="block";
+});
+
+/* ===== PANIC MODE ===== */
+function panic(){
+  document.body.classList.add("panic");
+  header.classList.add("glitch");
+  terminal.textContent="> SYSTEM_ALERT: BREACH DETECTED";
+  setTimeout(()=>{
+    document.body.classList.remove("panic");
+    header.classList.remove("glitch");
+  },3000);
+}
+</script>
+
+</body>
+</html>
