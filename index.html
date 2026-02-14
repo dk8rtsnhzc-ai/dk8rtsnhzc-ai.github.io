@@ -2,314 +2,1244 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>CTRL + Z</title>
-<meta name="theme-color" content="#00ff41">
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&display=swap');
 
-:root{
-  --green:#00ff41;
-  --red:#ff0033;
+:root {
+    --bg-primary: #0a0a0a;
+    --bg-secondary: #121212;
+    --bg-tertiary: #1a1a1a;
+    --accent-primary: #00ff88;
+    --accent-dim: #00aa55;
+    --accent-subtle: #004422;
+    --danger: #ff4444;
+    --danger-dim: #aa2222;
+    --text-primary: #e0e0e0;
+    --text-secondary: #909090;
+    --text-tertiary: #505050;
+    --border: #2a2a2a;
+    --border-accent: #00ff8833;
 }
 
-*{
-  box-sizing:border-box;
-  font-family:'Source Code Pro', monospace;
+* {
+    box-sizing: border-box;
+    font-family: 'JetBrains Mono', monospace;
+    -webkit-tap-highlight-color: transparent;
 }
 
-body{
-  margin:0;
-  background:black;
-  color:var(--green);
-  overflow:hidden;
-  animation:breath 9s infinite;
+body {
+    margin: 0;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    padding-bottom: 70px;
+    position: relative;
 }
 
-/* ===== BREATH ===== */
-@keyframes breath{
-  0%{filter:brightness(1)}
-  50%{filter:brightness(1.06)}
-  100%{filter:brightness(1)}
+/* Subtle grain texture */
+body::before {
+    content: "";
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(0,255,136,0.02) 2px,
+            rgba(0,255,136,0.02) 4px
+        );
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
 }
 
-/* ===== SCANLINES ===== */
-body::before{
-  content:"";
-  position:fixed;
-  inset:-20%;
-  background:
-    repeating-linear-gradient(
-      rgba(0,255,65,.07) 0px,
-      rgba(0,255,65,.07) 1px,
-      transparent 2px,
-      transparent 4px
+/* Subtle vignette */
+body::after {
+    content: "";
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+        ellipse at center,
+        transparent 0%,
+        transparent 60%,
+        rgba(0,0,0,0.4) 100%
     );
-  mix-blend-mode:overlay;
-  pointer-events:none;
-  animation:scan 6s linear infinite;
+    pointer-events: none;
+    z-index: 999;
 }
 
-@keyframes scan{
-  from{transform:translateY(0)}
-  to{transform:translateY(140px)}
+/* Login screen */
+.login-screen {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
 }
 
-/* ===== NOISE ===== */
-body::after{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
-  pointer-events:none;
-  mix-blend-mode:overlay;
+.login-box {
+    border: 1px solid var(--border-accent);
+    background: var(--bg-secondary);
+    padding: 30px;
+    max-width: 340px;
+    width: 90%;
+    box-shadow: 
+        0 0 40px rgba(0,255,136,0.1),
+        inset 0 0 60px rgba(0,255,136,0.02);
 }
 
-/* ===== RGB DRIFT ===== */
-@keyframes chroma{
-  0%{text-shadow:2px 0 red,-2px 0 cyan}
-  50%{text-shadow:-2px 0 red,2px 0 cyan}
-  100%{text-shadow:2px 0 red,-2px 0 cyan}
+.login-box h2 {
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0 0 8px 0;
+    color: var(--accent-primary);
+    letter-spacing: 4px;
+    text-transform: uppercase;
 }
 
-.glitch{
-  animation:chroma 1.1s infinite;
+.login-subtitle {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin: 0 0 24px 0;
+    letter-spacing: 1px;
 }
 
-/* ===== LOGIN ===== */
-#login{
-  position:fixed;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:black;
-  z-index:10;
+.login-box input {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 14px;
+    width: 100%;
+    font-size: 13px;
+    margin-bottom: 16px;
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-.login-box{
-  border:1px solid var(--green);
-  padding:20px;
-  width:90%;
-  max-width:320px;
-  text-align:center;
-  animation:glow 4s infinite;
+.login-box input:focus {
+    outline: none;
+    border-color: var(--accent-dim);
+    box-shadow: 0 0 20px rgba(0,255,136,0.15);
 }
 
-@keyframes glow{
-  0%{box-shadow:0 0 6px rgba(0,255,65,.2)}
-  50%{box-shadow:0 0 18px rgba(0,255,65,.6)}
-  100%{box-shadow:0 0 6px rgba(0,255,65,.2)}
+.login-box button {
+    padding: 14px;
+    width: 100%;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-accent);
+    color: var(--accent-primary);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.3s;
 }
 
-/* ===== HEADER ===== */
-header{
-  text-align:center;
-  padding:10px;
-  border-bottom:1px solid var(--green);
-  letter-spacing:2px;
-  animation:headerDrift 5s infinite alternate;
+.login-box button:active {
+    background: var(--accent-subtle);
+    box-shadow: 0 0 30px rgba(0,255,136,0.3);
 }
 
-@keyframes headerDrift{
-  from{letter-spacing:2px}
-  to{letter-spacing:3px}
+/* Header */
+header {
+    padding: 16px;
+    text-align: center;
+    font-size: 14px;
+    letter-spacing: 6px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: rgba(10,10,10,0.98);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+    font-weight: 500;
+    color: var(--accent-primary);
+    text-transform: uppercase;
 }
 
-/* ===== MAIN ===== */
-main{
-  height:calc(100vh - 90px);
-  overflow-y:auto;
-  padding:8px;
+.header-subtitle {
+    font-size: 9px;
+    color: var(--text-tertiary);
+    letter-spacing: 2px;
+    margin-top: 4px;
 }
 
-/* ===== POST BOX ===== */
-.post-box textarea{
-  width:100%;
-  height:60px;
-  background:black;
-  border:1px solid var(--green);
-  color:var(--green);
-  padding:6px;
+/* Container */
+.container {
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    position: relative;
+    z-index: 1;
+    max-width: 100%;
 }
 
-.post-box button{
-  width:100%;
-  margin-top:6px;
-  background:black;
-  border:1px solid var(--green);
-  color:var(--green);
-  padding:8px;
+/* Stats bar */
+.stats-bar {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 12px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    margin-bottom: 12px;
+    font-size: 10px;
+    color: var(--text-secondary);
+    letter-spacing: 1px;
 }
 
-/* ===== POSTS ===== */
-.post{
-  border-left:2px solid var(--green);
-  padding:8px;
-  margin-top:8px;
-  background:
-    linear-gradient(to right, rgba(0,255,65,.1), transparent),
-    repeating-linear-gradient(
-      rgba(0,255,65,.05) 0px,
-      rgba(0,255,65,.05) 1px,
-      transparent 2px,
-      transparent 5px
-    );
-  animation:appear .35s ease;
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
 }
 
-@keyframes appear{
-  from{opacity:0;transform:translateY(8px)}
-  to{opacity:1;transform:none}
+.stat-value {
+    color: var(--accent-primary);
+    font-size: 14px;
+    font-weight: 600;
 }
 
-/* ===== TERMINAL ===== */
-#terminal{
-  position:fixed;
-  bottom:0;
-  width:100%;
-  background:black;
-  border-top:1px solid var(--green);
-  padding:6px;
-  font-size:12px;
-  animation:terminalJitter .2s infinite alternate;
+.stat-label {
+    color: var(--text-tertiary);
+    text-transform: uppercase;
 }
 
-@keyframes terminalJitter{
-  from{opacity:.95}
-  to{opacity:1}
+/* Trending sidebar */
+.sidebar {
+    border: 1px solid var(--danger-dim);
+    background: var(--bg-secondary);
+    padding: 12px;
+    margin-bottom: 12px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: inset 0 0 40px rgba(255,68,68,0.03);
 }
 
-/* ===== PANELS ===== */
-.panel{
-  position:fixed;
-  top:0;
-  width:80%;
-  height:100%;
-  background:black;
-  border-left:1px solid var(--green);
-  border-right:1px solid var(--green);
-  z-index:9;
-  padding:10px;
-  display:none;
-  overflow-y:auto;
-  animation:panelSlide .3s ease;
+.sidebar.open {
+    max-height: 600px;
 }
 
-@keyframes panelSlide{
-  from{transform:translateX(-10px);opacity:0}
-  to{transform:none;opacity:1}
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
 }
 
-#trendingPanel{left:0}
-#adminPanel{right:0}
-
-/* ===== PANIC ===== */
-.panic{
-  animation:pulse .15s infinite;
+.sidebar h3 {
+    color: var(--danger);
+    font-size: 11px;
+    margin: 0;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
 }
 
-@keyframes pulse{
-  0%{background:#000}
-  50%{background:#220}
-  100%{background:#000}
+.sidebar-count {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    letter-spacing: 1px;
 }
+
+.trending {
+    border-left: 2px solid var(--danger);
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    font-size: 11px;
+    background: rgba(255,68,68,0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.trending:active {
+    background: rgba(255,68,68,0.1);
+}
+
+.trending-label {
+    color: var(--text-secondary);
+    flex: 1;
+}
+
+.trending-count {
+    color: var(--danger);
+    font-size: 10px;
+    font-weight: 600;
+}
+
+/* Toggle trending button */
+.toggle-trending {
+    width: 100%;
+    padding: 12px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--danger-dim);
+    color: var(--danger);
+    cursor: pointer;
+    margin-bottom: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.3s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.toggle-trending:active {
+    background: rgba(255,68,68,0.1);
+}
+
+/* Feed */
+.feed {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Post box */
+.post-box {
+    border: 1px solid var(--border-accent);
+    background: var(--bg-secondary);
+    padding: 12px;
+    margin-bottom: 12px;
+    box-shadow: inset 0 0 40px rgba(0,255,136,0.02);
+}
+
+.post-box-header {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.post-box textarea {
+    width: 100%;
+    height: 90px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    padding: 12px;
+    font-size: 13px;
+    resize: vertical;
+    transition: border-color 0.3s;
+    line-height: 1.5;
+}
+
+.post-box textarea:focus {
+    outline: none;
+    border-color: var(--accent-dim);
+}
+
+.post-box textarea::placeholder {
+    color: var(--text-tertiary);
+    opacity: 0.6;
+}
+
+.post-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.post-box button {
+    flex: 1;
+    padding: 12px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-accent);
+    color: var(--accent-primary);
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.3s;
+}
+
+.post-box button:active {
+    background: var(--accent-subtle);
+    box-shadow: 0 0 20px rgba(0,255,136,0.2);
+}
+
+.file-label {
+    flex: 1;
+    padding: 12px;
+    border: 1px dashed var(--border);
+    cursor: pointer;
+    font-size: 10px;
+    text-align: center;
+    color: var(--text-secondary);
+    letter-spacing: 1px;
+    transition: all 0.3s;
+    text-transform: uppercase;
+}
+
+.file-label:active {
+    border-color: var(--accent-dim);
+    color: var(--accent-primary);
+}
+
+.post-box input[type=file] { 
+    display: none; 
+}
+
+/* Posts */
+.post {
+    border: 1px solid var(--border);
+    background: var(--bg-secondary);
+    padding: 14px;
+    word-wrap: break-word;
+    position: relative;
+    transition: border-color 0.3s;
+}
+
+.post::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2px;
+    height: 100%;
+    background: var(--accent-dim);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.post:active::before {
+    opacity: 1;
+}
+
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+}
+
+.post-user {
+    font-size: 11px;
+    color: var(--accent-dim);
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.post-time {
+    font-size: 9px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.5px;
+}
+
+.post p {
+    margin: 0 0 12px 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-primary);
+}
+
+.post img {
+    max-width: 100%;
+    border: 1px solid var(--border);
+    margin-top: 10px;
+    display: block;
+}
+
+.post-meta {
+    font-size: 10px;
+    display: flex;
+    gap: 16px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    color: var(--text-secondary);
+}
+
+.post-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.post-meta-value {
+    color: var(--accent-dim);
+    font-weight: 600;
+}
+
+.post-meta button {
+    font-size: 10px;
+    padding: 4px 10px;
+    margin: 0;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+}
+
+.post-meta button:active {
+    border-color: var(--accent-dim);
+    color: var(--accent-primary);
+    background: var(--accent-subtle);
+}
+
+/* Terminal bar */
+.fake-terminal {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: rgba(18,18,18,0.98);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border);
+    padding: 10px 12px;
+    font-size: 10px;
+    color: var(--text-secondary);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    z-index: 99;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: 0.5px;
+}
+
+.terminal-indicator {
+    width: 6px;
+    height: 6px;
+    background: var(--accent-primary);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+/* Admin panel */
+#adminPanel {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 90%;
+    max-width: 380px;
+    height: 100%;
+    background: rgba(10,10,10,0.98);
+    backdrop-filter: blur(20px);
+    border-left: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 0;
+    overflow-y: scroll;
+    z-index: 1001;
+    transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: -20px 0 60px rgba(0,0,0,0.8);
+}
+
+#adminPanel.open {
+    right: 0;
+}
+
+.admin-header {
+    position: sticky;
+    top: 0;
+    background: rgba(18,18,18,0.98);
+    backdrop-filter: blur(10px);
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+    z-index: 10;
+}
+
+#adminPanel h2 { 
+    margin: 0 0 4px 0;
+    color: var(--accent-primary);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+.admin-subtitle {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    letter-spacing: 1px;
+}
+
+.admin-content {
+    padding: 16px;
+}
+
+.admin-section {
+    margin-bottom: 24px;
+}
+
+#adminPanel h3 {
+    font-size: 11px;
+    margin: 0 0 12px 0;
+    color: var(--text-secondary);
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+}
+
+.admin-group { 
+    margin-bottom: 10px; 
+}
+
+.admin-group label { 
+    display: block; 
+    font-size: 10px; 
+    color: var(--text-tertiary);
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+}
+
+.admin-group input, 
+.admin-group button, 
+.admin-group select { 
+    width: 100%; 
+    padding: 12px; 
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    cursor: pointer; 
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    transition: all 0.3s;
+}
+
+.admin-group button:active {
+    background: var(--accent-subtle);
+    border-color: var(--accent-dim);
+    color: var(--accent-primary);
+}
+
+.admin-group.danger button {
+    border-color: var(--danger-dim);
+    color: var(--danger);
+}
+
+.admin-group.danger button:active {
+    background: rgba(255,68,68,0.1);
+    border-color: var(--danger);
+}
+
+/* Admin toggle button */
+.admin-toggle {
+    position: fixed;
+    bottom: 80px;
+    right: 16px;
+    width: 52px;
+    height: 52px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-accent);
+    border-radius: 50%;
+    color: var(--accent-primary);
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 998;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 
+        0 4px 20px rgba(0,0,0,0.6),
+        inset 0 0 20px rgba(0,255,136,0.05);
+    transition: all 0.3s;
+}
+
+.admin-toggle:active {
+    transform: scale(0.95);
+    box-shadow: 
+        0 2px 10px rgba(0,0,0,0.8),
+        0 0 30px rgba(0,255,136,0.3);
+}
+
+/* Close button */
+.close-admin {
+    position: sticky;
+    top: 0;
+    background: var(--bg-secondary);
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.3s;
+}
+
+.close-admin:active {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+/* Landscape adjustments */
+@media (orientation: landscape) and (max-height: 500px) {
+    .login-box {
+        padding: 20px;
+    }
+    
+    header {
+        padding: 10px;
+        font-size: 12px;
+    }
+}
+
+/* Tablet adjustments */
+@media (min-width: 600px) {
+    .container {
+        padding: 16px;
+    }
+    
+    header {
+        font-size: 16px;
+    }
+    
+    .post-box textarea {
+        height: 110px;
+    }
+    
+    #adminPanel {
+        width: 400px;
+    }
+}
+
+/* Subtle effects */
+.glitch-text {
+    animation: subtle-glitch 4s infinite;
+}
+
+@keyframes subtle-glitch {
+    0%, 96%, 100% { 
+        transform: translate(0);
+    }
+    97% { 
+        transform: translate(-1px, 0);
+    }
+    98% { 
+        transform: translate(1px, 0);
+    }
+}
+
+.fade-in {
+    animation: fade-in 0.4s ease-out;
+}
+
+@keyframes fade-in {
+    from { 
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 </style>
 </head>
-
 <body>
 
-<div id="login">
-  <div class="login-box glitch">
-    <h3>CTRL + Z</h3>
-    <p>ENTER SCHOOL EMAIL</p>
-    <input style="width:100%;padding:8px;background:black;border:1px solid var(--green);color:var(--green)">
-    <button onclick="enter()">ENTER</button>
-  </div>
+<!-- LOGIN SCREEN -->
+<div class="login-screen" id="loginScreen">
+    <div class="login-box">
+        <h2>CTRL + Z</h2>
+        <p class="login-subtitle">ANONYMOUS FORUM ACCESS</p>
+        <input type="password" placeholder="ENTER ACCESS KEY" id="passInput">
+        <button onclick="enterMirror()">AUTHENTICATE</button>
+    </div>
 </div>
 
-<header id="header">CTRL + Z</header>
+<!-- HEADER -->
+<header id="mainHeader" class="glitch-text">
+    <div>CTRL + Z</div>
+    <div class="header-subtitle">DECENTRALIZED TRUTH NETWORK</div>
+</header>
 
-<main>
-  <div class="post-box">
-    <textarea id="text" placeholder=">_ transmit packet"></textarea>
-    <button onclick="post()">EXECUTE</button>
-  </div>
-  <div id="posts"></div>
-</main>
+<!-- MAIN CONTAINER -->
+<div class="container">
 
-<div id="terminal">> SYSTEM_LOG: INITIALIZING NODE...</div>
-
-<div class="panel" id="trendingPanel">
-  <h4>SYSTEM FEED</h4>
+<!-- STATS BAR -->
+<div class="stats-bar">
+    <div class="stat-item">
+        <div class="stat-value" id="activeUsers">247</div>
+        <div class="stat-label">Active</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-value" id="totalPosts">1,834</div>
+        <div class="stat-label">Posts</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-value" id="trending">12</div>
+        <div class="stat-label">Trending</div>
+    </div>
 </div>
 
-<div class="panel" id="adminPanel">
-  <h4>CONTROL NODE</h4>
-  <button onclick="panic()">BREACH / PANIC</button>
+<!-- TRENDING SIDEBAR -->
+<button class="toggle-trending" onclick="toggleTrending()">
+    <span>TRENDING TOPICS</span>
+    <span id="trendingArrow">▼</span>
+</button>
+
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h3>Hot Topics</h3>
+        <span class="sidebar-count">Live Updates</span>
+    </div>
+    <div class="trending">
+        <span class="trending-label">SYSTEM_BREACH_DETECTED</span>
+        <span class="trending-count">2.4K</span>
+    </div>
+    <div class="trending">
+        <span class="trending-label">EXPOSED_TRUTHS</span>
+        <span class="trending-count">1.8K</span>
+    </div>
+    <div class="trending">
+        <span class="trending-label">WHO_IS_BEHIND_THIS</span>
+        <span class="trending-count">1.2K</span>
+    </div>
+</div>
+
+<!-- MAIN FEED -->
+<div class="feed">
+
+<!-- POST BOX -->
+<div class="post-box">
+    <div class="post-box-header">Compose Anonymous Post</div>
+    <textarea id="postText" placeholder="Share what others won't say..."></textarea>
+    <div class="post-actions">
+        <label class="file-label">
+            Attach File
+            <input type="file" id="postImage" accept="image/*">
+        </label>
+        <button onclick="addPost()">Publish</button>
+    </div>
+</div>
+
+<!-- POSTS -->
+<div id="posts">
+    <div class="post fade-in">
+        <div class="post-header">
+            <span class="post-user">Anonymous #443</span>
+            <span class="post-time">12m ago</span>
+        </div>
+        <p>Si Louie nahuli nalulu</p>
+        <div class="post-meta">
+            <div class="post-meta-item">
+                <span class="post-meta-value" class="likes">0</span>
+                <button onclick="like(this)">+</button>
+            </div>
+            <div class="post-meta-item">
+                <span class="post-meta-value" class="reposts">0</span>
+                <button onclick="repost(this)">Share</button>
+            </div>
+        </div>
+    </div>
+    <div class="post fade-in">
+        <div class="post-header">
+            <span class="post-user">Anonymous #119</span>
+            <span class="post-time">24m ago</span>
+        </div>
+        <p>I saw something I wasn't supposed to see...</p>
+        <div class="post-meta">
+            <div class="post-meta-item">
+                <span class="post-meta-value" class="likes">0</span>
+                <button onclick="like(this)">+</button>
+            </div>
+            <div class="post-meta-item">
+                <span class="post-meta-value" class="reposts">0</span>
+                <button onclick="repost(this)">Share</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+<!-- TERMINAL BAR -->
+<div class="fake-terminal" id="terminal">
+    <div class="terminal-indicator"></div>
+    <span>SYSTEM_LOG: Initializing secure connection...</span>
+</div>
+
+<!-- ADMIN TOGGLE BUTTON -->
+<div class="admin-toggle" onclick="toggleAdmin()">⚙</div>
+
+<!-- ADMIN PANEL -->
+<div id="adminPanel">
+    <div class="admin-header">
+        <h2>Control Panel</h2>
+        <p class="admin-subtitle">Real-time manipulation interface</p>
+    </div>
+    
+    <div class="admin-content">
+        
+        <!-- SITE CONTROLS -->
+        <div class="admin-section">
+            <h3>Site Controls</h3>
+            <div class="admin-group">
+                <label>Modify header text</label>
+                <button onclick="changeHeader('CTRL+Z [COMPROMISED]')">Set: Compromised</button>
+            </div>
+            <div class="admin-group">
+                <button onclick="changeHeader('CTRL + Z')">Reset Header</button>
+            </div>
+            <div class="admin-group">
+                <label>Theme adjustment</label>
+                <button onclick="setAccent('#00ff88')">Default Theme</button>
+            </div>
+            <div class="admin-group">
+                <button onclick="setAccent('#ff4444')">Alert Theme</button>
+            </div>
+        </div>
+
+        <!-- POST CONTROLS -->
+        <div class="admin-section">
+            <h3>Post Management</h3>
+            <div class="admin-group">
+                <label>Inject system post</label>
+                <button onclick="addPostFake('SYSTEM: Unauthorized access detected.')">Inject Post</button>
+            </div>
+            <div class="admin-group">
+                <label>Remove content</label>
+                <button onclick="deleteLastPost()">Delete Last Post</button>
+            </div>
+            <div class="admin-group danger">
+                <button onclick="clearPosts()">Purge All Posts</button>
+            </div>
+            <div class="admin-group">
+                <label>Anonymize identifiers</label>
+                <button onclick="randomizeIDs()">Randomize IDs</button>
+            </div>
+            <div class="admin-group">
+                <label>Toggle compose box</label>
+                <button onclick="togglePostBox()">Show/Hide</button>
+            </div>
+        </div>
+
+        <!-- TRENDING CONTROLS -->
+        <div class="admin-section">
+            <h3>Trending Management</h3>
+            <div class="admin-group">
+                <label>Add trending topic</label>
+                <button onclick="addTrending('SYSTEM_ALERT')">Add Topic</button>
+            </div>
+            <div class="admin-group">
+                <button onclick="removeLastTrending()">Remove Last</button>
+            </div>
+            <div class="admin-group danger">
+                <button onclick="clearTrending()">Clear Trending</button>
+            </div>
+            <div class="admin-group">
+                <button onclick="randomizeTrending()">Randomize Topics</button>
+            </div>
+        </div>
+
+        <!-- VISUAL EFFECTS -->
+        <div class="admin-section">
+            <h3>Visual Effects</h3>
+            <div class="admin-group">
+                <label>Color inversion</label>
+                <button onclick="invertColors()">Invert</button>
+            </div>
+            <div class="admin-group">
+                <button onclick="resetColors()">Reset</button>
+            </div>
+            <div class="admin-group">
+                <label>Screen effects</label>
+                <button onclick="dimScreen()">Dim Display</button>
+            </div>
+            <div class="admin-group">
+                <button onclick="restoreScreen()">Restore</button>
+            </div>
+            <div class="admin-group danger">
+                <label>System alert</label>
+                <button onclick="systemAlert()">Trigger Alert</button>
+            </div>
+        </div>
+
+        <div style="height: 40px;"></div>
+    </div>
 </div>
 
 <script>
-const terminal=document.getElementById("terminal");
-const posts=document.getElementById("posts");
-const feed=document.getElementById("trendingPanel");
-const header=document.getElementById("header");
+// Initialize
+let postCount = 1834;
+let activeCount = 247;
 
-const chatter=[
-  "buffer warm",
-  "signal drifting",
-  "memory stable",
-  "listening quietly",
-  "idle but aware",
-  "routing ghosts",
-  "sync incomplete"
-];
-
-setInterval(()=>{
-  terminal.textContent="> SYSTEM: "+chatter[Math.floor(Math.random()*chatter.length)];
-},1800);
-
-setInterval(()=>{
-  const p=document.createElement("p");
-  p.textContent="⚠️ "+Math.random().toString(36).substring(2,10);
-  feed.prepend(p);
-  if(feed.children.length>8) feed.lastChild.remove();
-},4200);
-
-function enter(){
-  login.style.display="none";
-  terminal.textContent="> SYSTEM_LOG: SESSION AUTHENTICATED";
+// ===== LOGIN =====
+function enterMirror(){
+    document.getElementById("loginScreen").style.display = "none";
+    updateTerminal("Access granted. Session initialized. ID: Anonymous #0001");
 }
 
-function post(){
-  if(!text.value.trim()) return;
-  const p=document.createElement("div");
-  p.className="post";
-  p.innerHTML=`<strong>Anonymous #${Math.floor(Math.random()*999)}</strong><p>${text.value}</p>`;
-  posts.prepend(p);
-  terminal.textContent="> SYSTEM_LOG: DATA COMMITTED";
-  text.value="";
+// ===== TERMINAL UPDATE =====
+function updateTerminal(msg){
+    document.getElementById("terminal").innerHTML = `
+        <div class="terminal-indicator"></div>
+        <span>SYSTEM_LOG: ${msg}</span>
+    `;
 }
 
-let startX=0;
-document.addEventListener("touchstart",e=>startX=e.touches[0].clientX);
-document.addEventListener("touchend",e=>{
-  let dx=e.changedTouches[0].clientX-startX;
-  if(dx>80) adminPanel.style.display="block";
-  if(dx<-80) trendingPanel.style.display="block";
+// ===== ADD POST =====
+function addPost(){
+    let text = document.getElementById("postText").value;
+    let file = document.getElementById("postImage").files[0];
+    if(!text && !file) return;
+
+    let post = document.createElement("div");
+    post.className = "post fade-in";
+    post.dataset.likes = 0;
+    post.dataset.reposts = 0;
+
+    let imgHTML = "";
+    let timeStr = "Just now";
+
+    function render(){
+        post.innerHTML = `
+            <div class="post-header">
+                <span class="post-user">Anonymous #${Math.floor(Math.random()*999)}</span>
+                <span class="post-time">${timeStr}</span>
+            </div>
+            <p>${text}</p>
+            ${imgHTML}
+            <div class="post-meta">
+                <div class="post-meta-item">
+                    <span class="post-meta-value likes">0</span>
+                    <button onclick="like(this)">+</button>
+                </div>
+                <div class="post-meta-item">
+                    <span class="post-meta-value reposts">0</span>
+                    <button onclick="repost(this)">Share</button>
+                </div>
+            </div>
+        `;
+        document.getElementById("posts").prepend(post);
+        updateTerminal("New post transmitted to network.");
+        updateStats();
+    }
+
+    if(file){
+        let reader = new FileReader();
+        reader.onload = e=>{
+            imgHTML = `<img src="${e.target.result}">`;
+            render();
+        };
+        reader.readAsDataURL(file);
+    } else {
+        render();
+    }
+
+    document.getElementById("postText").value = "";
+    document.getElementById("postImage").value = "";
+}
+
+// ===== UPDATE STATS =====
+function updateStats(){
+    postCount++;
+    document.getElementById("totalPosts").textContent = postCount.toLocaleString();
+}
+
+// ===== LIKE/REPOST =====
+function like(btn){
+    let p = btn.closest(".post");
+    p.dataset.likes = parseInt(p.dataset.likes || 0) + 1;
+    p.querySelector(".likes").textContent = p.dataset.likes;
+}
+
+function repost(btn){
+    let p = btn.closest(".post");
+    p.dataset.reposts = parseInt(p.dataset.reposts || 0) + 1;
+    p.querySelector(".reposts").textContent = p.dataset.reposts;
+}
+
+// ===== TOGGLE TRENDING =====
+function toggleTrending(){
+    let sidebar = document.getElementById("sidebar");
+    let arrow = document.getElementById("trendingArrow");
+    sidebar.classList.toggle("open");
+    arrow.textContent = sidebar.classList.contains("open") ? "▲" : "▼";
+}
+
+// ===== TOGGLE ADMIN =====
+function toggleAdmin(){
+    let panel = document.getElementById("adminPanel");
+    panel.classList.toggle("open");
+}
+
+// ===== ADMIN FUNCTIONS =====
+function addPostFake(t){
+    let p = document.createElement("div");
+    p.className = "post fade-in";
+    p.dataset.likes = 0;
+    p.dataset.reposts = 0;
+    p.innerHTML = `
+        <div class="post-header">
+            <span class="post-user" style="color: var(--danger);">SYSTEM</span>
+            <span class="post-time">Now</span>
+        </div>
+        <p>${t}</p>
+        <div class="post-meta">
+            <div class="post-meta-item">
+                <span class="post-meta-value likes">0</span>
+                <button onclick="like(this)">+</button>
+            </div>
+            <div class="post-meta-item">
+                <span class="post-meta-value reposts">0</span>
+                <button onclick="repost(this)">Share</button>
+            </div>
+        </div>
+    `;
+    document.getElementById("posts").prepend(p);
+    updateTerminal("System post injected.");
+    updateStats();
+}
+
+function deleteLastPost(){
+    let posts = document.getElementById("posts");
+    if(posts.firstElementChild) {
+        posts.firstElementChild.remove();
+        updateTerminal("Post removed from network.");
+        postCount--;
+        document.getElementById("totalPosts").textContent = postCount.toLocaleString();
+    }
+}
+
+function clearPosts(){
+    document.getElementById("posts").innerHTML = "";
+    updateTerminal("All posts purged from database.");
+    postCount = 0;
+    document.getElementById("totalPosts").textContent = "0";
+}
+
+function randomizeIDs(){
+    document.querySelectorAll(".post-user").forEach(e => {
+        if(!e.textContent.includes("SYSTEM")){
+            e.textContent = "Anonymous #" + Math.floor(Math.random()*999);
+        }
+    });
+    updateTerminal("User identifiers randomized.");
+}
+
+function togglePostBox(){
+    let box = document.querySelector(".post-box");
+    box.style.display = box.style.display === "none" ? "block" : "none";
+}
+
+function changeHeader(t){
+    document.getElementById("mainHeader").innerHTML = `
+        <div>${t}</div>
+        <div class="header-subtitle">DECENTRALIZED TRUTH NETWORK</div>
+    `;
+    updateTerminal("Header modified.");
+}
+
+function setAccent(c){
+    document.documentElement.style.setProperty("--accent-primary", c);
+    document.documentElement.style.setProperty("--accent-dim", c + "aa");
+    document.documentElement.style.setProperty("--accent-subtle", c + "22");
+}
+
+function addTrending(t){
+    let d = document.createElement("div");
+    d.className = "trending";
+    d.innerHTML = `
+        <span class="trending-label">${t}</span>
+        <span class="trending-count">${Math.floor(Math.random()*3000)}</span>
+    `;
+    document.getElementById("sidebar").appendChild(d);
+    let count = parseInt(document.getElementById("trending").textContent);
+    document.getElementById("trending").textContent = count + 1;
+}
+
+function removeLastTrending(){
+    let sidebar = document.getElementById("sidebar");
+    let trendings = sidebar.querySelectorAll(".trending");
+    if(trendings.length > 0){
+        trendings[trendings.length - 1].remove();
+        let count = parseInt(document.getElementById("trending").textContent);
+        document.getElementById("trending").textContent = Math.max(0, count - 1);
+    }
+}
+
+function clearTrending(){
+    let sidebar = document.getElementById("sidebar");
+    sidebar.querySelectorAll(".trending").forEach(t => t.remove());
+    updateTerminal("Trending topics cleared.");
+    document.getElementById("trending").textContent = "0";
+}
+
+function randomizeTrending(){
+    document.querySelectorAll(".trending-label").forEach(t => {
+        t.textContent = "ALERT_" + Math.random().toString(36).substring(2,10).toUpperCase();
+    });
+    updateTerminal("Trending topics randomized.");
+}
+
+// ===== VISUAL EFFECTS =====
+function invertColors(){
+    document.body.style.filter = "invert(1) hue-rotate(180deg)";
+    updateTerminal("Color inversion active.");
+}
+
+function resetColors(){
+    document.body.style.filter = "none";
+    updateTerminal("Visual effects reset.");
+}
+
+function dimScreen(){
+    document.body.style.filter = "brightness(0.5)";
+    updateTerminal("Display dimmed.");
+}
+
+function restoreScreen(){
+    document.body.style.filter = "brightness(1)";
+    updateTerminal("Display restored.");
+}
+
+function systemAlert(){
+    // Subtle alert effect
+    document.body.style.transition = "background 0.3s";
+    document.body.style.background = "#1a0000";
+    updateTerminal("ALERT: Unauthorized activity detected.");
+    
+    setTimeout(() => {
+        document.body.style.background = "var(--bg-primary)";
+    }, 2000);
+}
+
+// Initialize post data
+document.querySelectorAll('.post').forEach(post => {
+    if(!post.dataset.likes) post.dataset.likes = 0;
+    if(!post.dataset.reposts) post.dataset.reposts = 0;
 });
 
-function panic(){
-  document.body.classList.add("panic");
-  header.classList.add("glitch");
-  terminal.textContent="> SYSTEM_ALERT: BREACH DETECTED";
-  setTimeout(()=>{
-    document.body.classList.remove("panic");
-    header.classList.remove("glitch");
-  },3200);
-}
+// Simulate active users fluctuation
+setInterval(() => {
+    activeCount = 247 + Math.floor(Math.random() * 20) - 10;
+    document.getElementById("activeUsers").textContent = activeCount;
+}, 5000);
 </script>
-
 </body>
 </html>
